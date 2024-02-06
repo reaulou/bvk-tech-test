@@ -9,7 +9,7 @@ public interface ProductService {
 
     List<Product> fetchAllProducts();
 
-    Product getProductById(Long id);
+    Integer getProductQuantityById(Long id);
 
     Product updateProductQuantityById(Long id, Integer quantity);
 

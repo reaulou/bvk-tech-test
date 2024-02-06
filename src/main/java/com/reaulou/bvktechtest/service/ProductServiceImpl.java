@@ -27,10 +27,11 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product getProductById(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent()) {
-            return product.get();
+    public Integer getProductQuantityById(Long id) {
+        Optional<Product> product1 = productRepository.findById(id);
+        if (product1.isPresent()) {
+            Product product = product1.get();
+            return product.getQuantity();
         }
         return null;
     }
