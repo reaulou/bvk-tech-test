@@ -2,6 +2,7 @@ package com.reaulou.bvktechtest.controller;
 
 import com.reaulou.bvktechtest.model.Product;
 import com.reaulou.bvktechtest.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @RestController
 public class ProductController {
 
+    @Autowired
     private ProductService productService;
 
     @PostMapping("/product")
