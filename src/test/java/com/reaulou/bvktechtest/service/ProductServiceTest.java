@@ -73,7 +73,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    void getProductQuantityById_productExist(){
+    void testGetProductQuantityById_productExist(){
         Product product = new Product("Buku Player's Handbook DND", 199999, 7);
 
         long id = 1;
@@ -88,7 +88,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    void getProductQuantityById_productNotExist(){
+    void testGetProductQuantityById_productNotExist(){
         long id = 1;
         when(productRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -98,5 +98,87 @@ public class ProductServiceTest {
         assertEquals(null, returnedQuantity);
         // verify that this method was invoked exactly 1 time
         verify(productRepository, times(1)).findById(id);
+    }
+
+    @Test
+    void testUpdateProductQuantityById_productExist(){
+        Product product = new Product("Buku Player's Handbook DND", 199999, 7);
+        Product newProduct = new Product("Buku Player's Handbook DND", 199999, 11);
+
+        long id = 1;
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(productRepository.save(any(Product.class))).thenReturn(newProduct);
+
+        // test
+        Product returnedProduct = productService.updateProductQuantityById(id, 11);
+
+        assertEquals(11, returnedProduct.getQuantity());
+        // verify that this method was invoked exactly 1 time
+        verify(productRepository, times(1)).findById(id);
+        verify(productRepository, times(1)).save(any(Product.class));
+    }
+
+    @Test
+    void testUpdateProductQuantityById_productNotExist(){
+        long id = 1;
+        when(productRepository.findById(id)).thenReturn(Optional.empty());
+
+        // test
+        Product returnedProduct = productService.updateProductQuantityById(id, 11);
+
+        assertEquals(null, returnedProduct);
+        // verify that this method was invoked exactly 1 time
+        verify(productRepository, times(1)).findById(id);
+    }
+
+    @Test
+    void testExecuteProductOrder_success(){
+        Product product = new Product("Buku Player's Handbook DND", 199999, 7);
+
+        long id = 1;
+        Integer orderedQuantity = 5;
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+
+        //test
+        Integer returnedQuantity = productService.executeProductOrder(id, orderedQuantity);
+
+        // should be 2 books left after buying 5 from a stock of 7
+        assertEquals(2, returnedQuantity);
+        // verify that this method was invoked exactly 1 time
+        verify(productRepository, times(1)).findById(id);
+        verify(productRepository, times(1)).save(any(Product.class));
+    }
+
+    @Test
+    void testExecuteProductOrder_notExist(){
+        long id = 1;
+        Integer orderedQuantity = 5;
+        when(productRepository.findById(any())).thenReturn(Optional.empty());
+
+        //test
+        Integer returnedQuantity = productService.executeProductOrder(id, orderedQuantity);
+
+        // should be 2 books left after buying 5 from a stock of 7
+        assertEquals(null, returnedQuantity);
+        // verify that this method was invoked exactly 1 time
+        verify(productRepository, times(1)).findById(id);
+    }
+
+    @Test
+    void testExecuteProductOrder_orderQuantitySameWithStockQuantity(){
+        Product product = new Product("Buku Player's Handbook DND", 199999, 7);
+
+        long id = 1;
+        Integer orderedQuantity = 7;
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+
+        //test
+        Integer returnedQuantity = productService.executeProductOrder(id, orderedQuantity);
+
+        // should be 0 books left after buying 7 from a stock of 7
+        assertEquals(0, returnedQuantity);
+        // verify that this method was invoked exactly 1 time
+        verify(productRepository, times(1)).findById(id);
+        verify(productRepository, times(1)).deleteById(id);
     }
 }
