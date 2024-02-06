@@ -25,17 +25,17 @@ public class ProductController {
     }
 
     @GetMapping("/product/{id}")
-    public Product getEmployeeById(@PathVariable("id") Long id) {
-        return productService.getProductById(id);
+    public Integer getProductQuantityById(@PathVariable("id") Long id) {
+        return productService.getProductQuantityById(id);
     }
 
     @PutMapping("/product/{id}/{quantity}")
-    public Product updateEmployee(@PathVariable("id") Long id, @PathVariable("quantity") Integer quantity) {
+    public Product updateProduct(@PathVariable("id") Long id, @PathVariable("quantity") Integer quantity) {
         return productService.updateProductQuantityById(id, quantity);
     }
 
-    @DeleteMapping("/product/order/{id}/{quantity}")
-    public Integer deleteEmployee(@PathVariable("id") Long id, @PathVariable("quantity") Integer quantity) {
+    @PostMapping("/product/order/{id}/{quantity}")
+    public Integer orderProduct(@PathVariable("id") Long id, @PathVariable("quantity") Integer quantity) {
         return productService.executeProductOrder(id, quantity);
     }
 
