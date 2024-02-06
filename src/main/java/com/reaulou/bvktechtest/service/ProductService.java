@@ -7,7 +7,7 @@ import com.reaulou.bvktechtest.model.Product;
 public interface ProductService {
     Product addProduct(Product product);
 
-    List<Product> fetchAllProducts();
+    List<Product> getAllProducts();
 
     Integer getProductQuantityById(Long id);
 

@@ -21,7 +21,7 @@ public class ProductController {
 
     @GetMapping("/product")
     public List<Product> getAllProducts() {
-        return productService.fetchAllProducts();
+        return productService.getAllProducts();
     }
 
     @GetMapping("/product/{id}")
