@@ -2,10 +2,8 @@ package com.reaulou.bvktechtest.controller;
 
 import com.reaulou.bvktechtest.model.Product;
 import com.reaulou.bvktechtest.service.MessageBuildService;
-import com.reaulou.bvktechtest.service.MessageParseService;
 import com.reaulou.bvktechtest.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -20,25 +18,24 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    private MessageParseService messageParseService;
-    private MessageBuildService messageBuilderService;
+    @Autowired
+    private MessageBuildService messageBuildService;
 
 
     @RequestMapping("/product/add")
-    public ResponseEntity saveEmployee(RequestEntity<String> request) {
+    public ResponseEntity addProduct(RequestEntity<String> request) {
         Product responseProduct = null;
 
         // parse request
-        HttpMethod method = request.getMethod();
         String body = request.getBody();
 
-        Product requestProduct = messageParseService.parseProduct();
+        Product requestProduct = messageBuildService.parseProduct(body);
 
         // service
-        responseProduct = productService.addProduct(product);
+        responseProduct = productService.addProduct(requestProduct);
 
         // build response
-        String responseBody = messageBuilderService.buildResponseBody(responseProduct, returnCode);
+        String responseBody = messageBuildService.buildResponseBody(responseProduct);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
