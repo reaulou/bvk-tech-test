@@ -3,6 +3,8 @@ package com.reaulou.bvktechtest.controller;
 import com.reaulou.bvktechtest.model.Product;
 import com.reaulou.bvktechtest.service.MessageBuildService;
 import com.reaulou.bvktechtest.service.ProductService;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -24,40 +26,84 @@ public class ProductController {
 
     @RequestMapping("/product/add")
     public ResponseEntity addProduct(RequestEntity<String> request) {
-        Product responseProduct = null;
-
         // parse request
         String body = request.getBody();
-
         Product requestProduct = messageBuildService.parseProduct(body);
 
         // service
-        responseProduct = productService.addProduct(requestProduct);
+        Product responseProduct = productService.addProduct(requestProduct);
 
         // build response
-        String responseBody = messageBuildService.buildResponseBody(responseProduct);
+        JSONObject responseProductJSON = new JSONObject(responseProduct);
+        String responseBody = messageBuildService.buildResponseBody("product", responseProductJSON);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     @GetMapping("/product/get-all")
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public ResponseEntity getAllProducts() {
+        // service
+        List<Product> productList = productService.getAllProducts();
+
+        // build response
+        JSONArray productListJSON = new JSONArray(productList);
+        String responseBody = messageBuildService.buildResponseBody("product_list", productListJSON);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     @GetMapping("/product/get/{id}")
-    public Integer getProductQuantityById(@PathVariable("id") Long id) {
-        return productService.getProductQuantityById(id);
+    public ResponseEntity getProductQuantityById(@PathVariable("id") Long id) {
+        // service
+        Integer quantity = productService.getProductQuantityById(id);
+
+        // build response
+        JSONObject responseContentJSON = new JSONObject();
+        responseContentJSON.put("id", id);
+        responseContentJSON.put("quantity", quantity);
+        String responseBody = messageBuildService.buildResponseBody(responseContentJSON);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    @PutMapping("/product/update-quantity/{id}/{quantity}")
-    public Product updateProduct(@PathVariable("id") Long id, @PathVariable("quantity") Integer quantity) {
-        return productService.updateProductQuantityById(id, quantity);
+    @PostMapping("/product/update-quantity")
+    public ResponseEntity updateProduct(RequestEntity<String> request) {
+        // parse request
+        String body = request.getBody();
+        JSONObject requestContent = messageBuildService.parseRequestMessage(body);
+
+        long id = requestContent.getLong("id");
+        Integer requestQuantity = requestContent.getInt("quantity");
+
+        // service
+        Product responseProduct = productService.updateProductQuantityById(id, requestQuantity);
+
+        // build response
+        JSONObject responseProductJSON = new JSONObject(responseProduct);
+        String responseBody = messageBuildService.buildResponseBody("product", responseProductJSON);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    @PostMapping("/product/order/{id}/{quantity}")
-    public Integer orderProduct(@PathVariable("id") Long id, @PathVariable("quantity") Integer quantity) {
-        return productService.executeProductOrder(id, quantity);
+    @PostMapping("/product/order")
+    public ResponseEntity orderProduct(RequestEntity<String> request) {
+        // parse request
+        String body = request.getBody();
+        JSONObject requestContent = messageBuildService.parseRequestMessage(body);
+
+        long id = requestContent.getLong("id");
+        Integer requestQuantity = requestContent.getInt("quantity");
+
+        // service
+        Integer responseQuantity = productService.executeProductOrder(id, requestQuantity);
+
+        // build response
+        JSONObject responseContentJSON = new JSONObject();
+        responseContentJSON.put("id", id);
+        responseContentJSON.put("remaining-quantity", responseQuantity);
+        String responseBody = messageBuildService.buildResponseBody(responseContentJSON);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
 }

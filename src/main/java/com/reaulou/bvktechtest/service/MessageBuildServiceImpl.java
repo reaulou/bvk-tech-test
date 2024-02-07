@@ -4,6 +4,8 @@ import com.reaulou.bvktechtest.model.Product;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MessageBuildServiceImpl implements MessageBuildService{
 
@@ -20,19 +22,29 @@ public class MessageBuildServiceImpl implements MessageBuildService{
     }
 
     @Override
-    public String buildResponseBody(Product responseProduct) {
-        String name = responseProduct.getName();
-        Integer price = responseProduct.getPrice();
-        Integer quantity = responseProduct.getQuantity();
-
+    public String buildResponseBody(String key, Object messageContent) {
         JSONObject messageJSON = new JSONObject();
-        messageJSON.put("quantity", quantity);
-        messageJSON.put("price", price);
-        messageJSON.put("name", name);
+        messageJSON.put(key, messageContent);
 
         JSONObject bodyJSON = new JSONObject();
         bodyJSON.put("message", messageJSON);
 
         return bodyJSON.toString();
+    }
+
+    @Override
+    public String buildResponseBody(Object messageContent) {
+        JSONObject bodyJSON = new JSONObject();
+        bodyJSON.put("message", messageContent);
+
+        return bodyJSON.toString();
+    }
+
+    @Override
+    public JSONObject parseRequestMessage(String body) {
+        JSONObject bodyJSON = new JSONObject(body);
+        JSONObject messageJSON = bodyJSON.getJSONObject("message");
+
+        return messageJSON;
     }
 }
