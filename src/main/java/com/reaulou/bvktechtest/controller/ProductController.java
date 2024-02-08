@@ -96,6 +96,21 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
+    @PostMapping("/product/delete")
+    public ResponseEntity deleteProduct(RequestEntity<String> request) {
+        // parse request
+        String body = request.getBody();
+        InternalRequest internalRequest = messageBuildService.parseExternalRequest(body);
+
+        // service
+        InternalResponse internalResponse = productService.deleteProductById(internalRequest);
+
+        // build response
+        String responseBody = messageBuildService.buildResponseBody(internalResponse);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+    }
+
     @PostMapping("/product/order")
     public ResponseEntity orderProduct(RequestEntity<String> request) {
         // parse request

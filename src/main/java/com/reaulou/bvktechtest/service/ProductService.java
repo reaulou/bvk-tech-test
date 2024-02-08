@@ -15,5 +15,7 @@ public interface ProductService {
 
     InternalResponse updateProductById(InternalRequest internalRequest);
 
+    InternalResponse deleteProductById(InternalRequest internalRequest);
+
     InternalResponse executeProductOrder(InternalRequest internalRequest);
 }

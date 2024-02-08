@@ -115,6 +115,32 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public InternalResponse deleteProductById(InternalRequest internalRequest) {
+        // retrieve data from request
+        Long id = internalRequest.getId();
+
+        InternalResponse internalResponse = new InternalResponse();
+        try{
+            Optional<Product> product1 = productRepository.findById(id);
+            if (product1.isPresent()) {
+                productRepository.deleteById(id);
+                // set internalResponse
+                internalResponse.setReturnCode("00");
+                internalResponse.setReturnDesc("success");
+            }else{
+                // set internalResponse
+                internalResponse.setReturnCode("60");
+                internalResponse.setReturnDesc("product not found");
+            }
+        }catch (Exception e){
+            // set internalResponse
+            internalResponse.setReturnCode("99");
+            internalResponse.setReturnDesc("internal server error");
+        }
+        return internalResponse;
+    }
+
+    @Override
     public InternalResponse executeProductOrder(InternalRequest internalRequest) {
         // retrieve data from request
         Long id = internalRequest.getId();
