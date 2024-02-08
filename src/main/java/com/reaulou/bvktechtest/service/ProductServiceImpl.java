@@ -61,10 +61,9 @@ public class ProductServiceImpl implements ProductService{
             Optional<Product> product1 = productRepository.findById(id);
             if (product1.isPresent()) {
                 Product product = product1.get();
-                List<Product> productList = Arrays.asList(product);
 
                 // set internalResponse
-                internalResponse.setProductList(productList);
+                internalResponse.setProduct(product);
                 internalResponse.setReturnCode("00");
                 internalResponse.setReturnDesc("success");
             }else{

@@ -71,8 +71,8 @@ public class ProductController {
 
         // build response
         JSONObject responseProductJSON = null;
-        if(internalResponse.getProductList() != null) {
-            Product responseProduct = internalResponse.getProductList().get(0);
+        if(internalResponse.getProduct() != null) {
+            Product responseProduct = internalResponse.getProduct();
             responseProductJSON = new JSONObject(responseProduct);
         }
 
