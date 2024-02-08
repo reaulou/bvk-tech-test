@@ -1,5 +1,7 @@
 package com.reaulou.bvktechtest.service;
 
+import com.reaulou.bvktechtest.core.InternalMessage;
+import com.reaulou.bvktechtest.core.InternalRequest;
 import com.reaulou.bvktechtest.model.Product;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -8,6 +10,20 @@ import java.util.List;
 
 @Service
 public class MessageBuildServiceImpl implements MessageBuildService{
+    @Override
+    public InternalRequest parseExternalRequest(String body){
+        JSONObject bodyJSON = new JSONObject(body);
+        JSONObject messageJSON = bodyJSON.getJSONObject("message");
+
+        String name = messageJSON.getString("name");
+        Integer price = messageJSON.getInt("price");
+        Integer quantity = messageJSON.getInt("quantity");
+
+        InternalRequest internalRequest = new InternalRequest();
+        internalRequest.setProduct(new Product(name, price, quantity));
+
+        return internalRequest;
+    }
 
     @Override
     public Product parseProduct(String body) {

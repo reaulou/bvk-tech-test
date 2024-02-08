@@ -1,5 +1,7 @@
 package com.reaulou.bvktechtest.controller;
 
+import com.reaulou.bvktechtest.core.InternalRequest;
+import com.reaulou.bvktechtest.core.InternalResponse;
 import com.reaulou.bvktechtest.model.Product;
 import com.reaulou.bvktechtest.service.MessageBuildService;
 import com.reaulou.bvktechtest.service.ProductService;
@@ -29,11 +31,13 @@ public class ProductController {
         // parse request
         String body = request.getBody();
         Product requestProduct = messageBuildService.parseProduct(body);
+        InternalRequest internalRequest = messageBuildService.parseExternalRequest(body);
 
         // service
-        Product responseProduct = productService.addProduct(requestProduct);
+        InternalResponse internalResponse = productService.addProduct(internalRequest);
 
         // build response
+        Product responseProduct = internalResponse.getProduct();
         JSONObject responseProductJSON = new JSONObject(responseProduct);
         String responseBody = messageBuildService.buildResponseBody("product", responseProductJSON);
 

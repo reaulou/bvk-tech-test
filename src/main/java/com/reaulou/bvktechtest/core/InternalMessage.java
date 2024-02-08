@@ -1,11 +1,21 @@
 package com.reaulou.bvktechtest.core;
 
+import com.reaulou.bvktechtest.model.Product;
+
 public class InternalMessage {
+    protected Product product;
     protected Long id;
     protected String name;
     protected Integer price;
     protected Integer quantity;
     protected String extInfo;
+
+    public Product getProduct(){
+        return product;
+    }
+    public void setProduct(Product product){
+        this.product = product;
+    }
 
     public Long getId() {
         return id;

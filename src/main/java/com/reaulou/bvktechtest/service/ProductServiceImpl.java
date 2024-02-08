@@ -1,5 +1,7 @@
 package com.reaulou.bvktechtest.service;
 
+import com.reaulou.bvktechtest.core.InternalRequest;
+import com.reaulou.bvktechtest.core.InternalResponse;
 import com.reaulou.bvktechtest.model.Product;
 import com.reaulou.bvktechtest.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,22 @@ public class ProductServiceImpl implements ProductService{
     private ProductRepository productRepository;
 
     @Override
-    public Product addProduct(Product product) {
-        return productRepository.save(product);
+    public InternalResponse addProduct(InternalRequest internalRequest) {
+        Product product = internalRequest.getProduct();
+        try {
+            Product responseProduct = productRepository.save(product);
+
+            InternalResponse internalResponse = new InternalResponse();
+            internalResponse.setProduct(responseProduct);
+            internalResponse.setReturnCode("00");
+            internalResponse.setReturnDesc("success");
+            return internalResponse;
+        }catch (Exception e) {
+            InternalResponse internalResponse = new InternalResponse();
+            internalResponse.setReturnCode("99");
+            internalResponse.setReturnDesc("internal server error");
+            return internalResponse;
+        }
     }
 
     @Override
