@@ -5,8 +5,6 @@ import com.reaulou.bvktechtest.core.InternalResponse;
 import com.reaulou.bvktechtest.model.Product;
 import com.reaulou.bvktechtest.service.MessageBuildService;
 import com.reaulou.bvktechtest.service.ProductService;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -51,44 +49,46 @@ public class ProductController {
     @GetMapping("/product/get-all")
     public ResponseEntity getAllProducts() {
         // service
-        List<Product> productList = productService.getAllProducts();
+        InternalResponse internalResponse = productService.getAllProducts();
 
         // build response
-        JSONArray productListJSON = new JSONArray(productList);
-        String responseBody = messageBuildService.buildResponseBody("product_list", productListJSON);
+        List<Product> productList = internalResponse.getProductList();
+
+        String responseBody = messageBuildService.buildResponseBody(productList, internalResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
     @GetMapping("/product/get/{id}")
-    public ResponseEntity getProductQuantityById(@PathVariable("id") Long id) {
+    public ResponseEntity getProductById(@PathVariable("id") Long id) {
+        // parse request
+        InternalRequest internalRequest = new InternalRequest();
+        internalRequest.setId(id);
+
         // service
-        Integer quantity = productService.getProductQuantityById(id);
+        InternalResponse internalResponse = productService.getProductById(internalRequest);
 
         // build response
-        JSONObject responseContentJSON = new JSONObject();
-        responseContentJSON.put("id", id);
-        responseContentJSON.put("quantity", quantity);
-        String responseBody = messageBuildService.buildResponseBody(responseContentJSON);
+        Product responseProduct = null;
+        if(internalResponse.getProductList() != null) {
+            responseProduct = internalResponse.getProductList().get(0);
+        }
+        String responseBody = messageBuildService.buildResponseBody(responseProduct ,internalResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
-    @PostMapping("/product/update-quantity")
+    @PostMapping("/product/update")
     public ResponseEntity updateProduct(RequestEntity<String> request) {
         // parse request
         String body = request.getBody();
-        JSONObject requestContent = messageBuildService.parseRequestMessage(body);
-
-        long id = requestContent.getLong("id");
-        Integer requestQuantity = requestContent.getInt("quantity");
+        InternalRequest internalRequest = messageBuildService.parseExternalRequest(body);
 
         // service
-        Product responseProduct = productService.updateProductQuantityById(id, requestQuantity);
+        InternalResponse internalResponse = productService.updateProductById(internalRequest);
 
         // build response
-        JSONObject responseProductJSON = new JSONObject(responseProduct);
-        String responseBody = messageBuildService.buildResponseBody("product", responseProductJSON);
+        String responseBody = messageBuildService.buildResponseBody(internalResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
@@ -97,19 +97,13 @@ public class ProductController {
     public ResponseEntity orderProduct(RequestEntity<String> request) {
         // parse request
         String body = request.getBody();
-        JSONObject requestContent = messageBuildService.parseRequestMessage(body);
-
-        long id = requestContent.getLong("id");
-        Integer requestQuantity = requestContent.getInt("quantity");
+        InternalRequest internalRequest = messageBuildService.parseExternalRequest(body);
 
         // service
-        Integer responseQuantity = productService.executeProductOrder(id, requestQuantity);
+        InternalResponse internalResponse = productService.executeProductOrder(internalRequest);
 
         // build response
-        JSONObject responseContentJSON = new JSONObject();
-        responseContentJSON.put("id", id);
-        responseContentJSON.put("remaining-quantity", responseQuantity);
-        String responseBody = messageBuildService.buildResponseBody(responseContentJSON);
+        String responseBody = messageBuildService.buildResponseBody(internalResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }

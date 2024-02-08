@@ -2,13 +2,23 @@ package com.reaulou.bvktechtest.core;
 
 import com.reaulou.bvktechtest.model.Product;
 
+import java.util.List;
+
 public class InternalMessage {
+    protected List<Product> productList;
     protected Product product;
     protected Long id;
     protected String name;
     protected Integer price;
     protected Integer quantity;
     protected String extInfo;
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
 
     public Product getProduct(){
         return product;

@@ -9,11 +9,11 @@ import com.reaulou.bvktechtest.model.Product;
 public interface ProductService {
     InternalResponse addProduct(InternalRequest internalRequest);
 
-    List<Product> getAllProducts();
+    InternalResponse getAllProducts();
 
-    Integer getProductQuantityById(Long id);
+    InternalResponse getProductById(InternalRequest internalRequest);
 
-    Product updateProductQuantityById(Long id, Integer quantity);
+    InternalResponse updateProductById(InternalRequest internalRequest);
 
-    Integer executeProductOrder(Long id, Integer orderedQuantity);
+    InternalResponse executeProductOrder(InternalRequest internalRequest);
 }

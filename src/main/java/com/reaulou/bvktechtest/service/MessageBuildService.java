@@ -12,6 +12,4 @@ public interface MessageBuildService {
     InternalRequest parseExternalRequest(String body);
     String buildResponseBody(InternalResponse internalResponse);
     String buildResponseBody(Object payload, InternalResponse internalResponse);
-
-    JSONObject parseRequestMessage(String body);
 }

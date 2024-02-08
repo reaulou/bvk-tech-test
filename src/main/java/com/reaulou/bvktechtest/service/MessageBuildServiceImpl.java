@@ -16,11 +16,17 @@ public class MessageBuildServiceImpl implements MessageBuildService{
         JSONObject bodyJSON = new JSONObject(body);
         JSONObject messageJSON = bodyJSON.getJSONObject("message");
 
+
+        Long id = messageJSON.getLong("id");
         String name = messageJSON.getString("name");
         Integer price = messageJSON.getInt("price");
         Integer quantity = messageJSON.getInt("quantity");
 
         InternalRequest internalRequest = new InternalRequest();
+        internalRequest.setId(id);
+        internalRequest.setName(name);
+        internalRequest.setPrice(price);
+        internalRequest.setQuantity(quantity);
         internalRequest.setProduct(new Product(name, price, quantity));
 
         return internalRequest;
@@ -71,15 +77,5 @@ public class MessageBuildServiceImpl implements MessageBuildService{
         bodyJSON.put("returnCode", returnCodeJSON);
 
         return bodyJSON.toString();
-    }
-
-
-
-    @Override
-    public JSONObject parseRequestMessage(String body) {
-        JSONObject bodyJSON = new JSONObject(body);
-        JSONObject messageJSON = bodyJSON.getJSONObject("message");
-
-        return messageJSON;
     }
 }
