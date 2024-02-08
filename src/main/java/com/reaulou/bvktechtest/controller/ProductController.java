@@ -35,7 +35,7 @@ public class ProductController {
             InternalResponse errorResponse = new InternalResponse();
             errorResponse.setReturnCode("70");
             String errorResponseBody = messageBuildService.buildResponseBody(errorResponse);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseBody);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Content-Type", "application/json").body(errorResponseBody);
         }
 
         // service
@@ -43,8 +43,7 @@ public class ProductController {
 
         // build response
         String responseBody = messageBuildService.buildResponseBody(internalResponse);
-
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "application/json").body(responseBody);
     }
 
     @GetMapping("/product/get-all")
@@ -57,7 +56,7 @@ public class ProductController {
 
         String responseBody = messageBuildService.buildResponseBody(productList, internalResponse);
 
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "application/json").body(responseBody);
     }
 
     @GetMapping("/product/get/{id}")
@@ -78,14 +77,22 @@ public class ProductController {
 
         String responseBody = messageBuildService.buildResponseBody(responseProductJSON,internalResponse);
 
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "application/json").body(responseBody);
     }
 
     @PostMapping("/product/update")
     public ResponseEntity updateProduct(RequestEntity<String> request) {
         // parse request
         String body = request.getBody();
-        InternalRequest internalRequest = messageBuildService.parseExternalRequest(body);
+        InternalRequest internalRequest;
+        try{
+            internalRequest = messageBuildService.parseExternalRequest(body);
+        }catch (Exception e){
+            InternalResponse errorResponse = new InternalResponse();
+            errorResponse.setReturnCode("70");
+            String errorResponseBody = messageBuildService.buildResponseBody(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Content-Type", "application/json").body(errorResponseBody);
+        }
 
         // service
         InternalResponse internalResponse = productService.updateProductById(internalRequest);
@@ -93,14 +100,22 @@ public class ProductController {
         // build response
         String responseBody = messageBuildService.buildResponseBody(internalResponse);
 
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "application/json").body(responseBody);
     }
 
     @PostMapping("/product/delete")
     public ResponseEntity deleteProduct(RequestEntity<String> request) {
         // parse request
         String body = request.getBody();
-        InternalRequest internalRequest = messageBuildService.parseExternalRequest(body);
+        InternalRequest internalRequest;
+        try{
+            internalRequest = messageBuildService.parseExternalRequest(body);
+        }catch (Exception e){
+            InternalResponse errorResponse = new InternalResponse();
+            errorResponse.setReturnCode("70");
+            String errorResponseBody = messageBuildService.buildResponseBody(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Content-Type", "application/json").body(errorResponseBody);
+        }
 
         // service
         InternalResponse internalResponse = productService.deleteProductById(internalRequest);
@@ -108,14 +123,22 @@ public class ProductController {
         // build response
         String responseBody = messageBuildService.buildResponseBody(internalResponse);
 
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "application/json").body(responseBody);
     }
 
     @PostMapping("/product/order")
     public ResponseEntity orderProduct(RequestEntity<String> request) {
         // parse request
         String body = request.getBody();
-        InternalRequest internalRequest = messageBuildService.parseExternalRequest(body);
+        InternalRequest internalRequest;
+        try{
+            internalRequest = messageBuildService.parseExternalRequest(body);
+        }catch (Exception e){
+            InternalResponse errorResponse = new InternalResponse();
+            errorResponse.setReturnCode("70");
+            String errorResponseBody = messageBuildService.buildResponseBody(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Content-Type", "application/json").body(errorResponseBody);
+        }
 
         // service
         InternalResponse internalResponse = productService.executeProductOrder(internalRequest);
@@ -123,7 +146,7 @@ public class ProductController {
         // build response
         String responseBody = messageBuildService.buildResponseBody(internalResponse);
 
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "application/json").body(responseBody);
     }
 
 }
