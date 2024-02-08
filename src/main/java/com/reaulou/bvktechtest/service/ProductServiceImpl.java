@@ -21,10 +21,9 @@ public class ProductServiceImpl implements ProductService{
     public InternalResponse addProduct(InternalRequest internalRequest) {
         Product product = internalRequest.getProduct();
         try {
-            Product responseProduct = productRepository.save(product);
+            productRepository.save(product);
 
             InternalResponse internalResponse = new InternalResponse();
-            internalResponse.setProduct(responseProduct);
             internalResponse.setReturnCode("00");
             internalResponse.setReturnDesc("success");
             return internalResponse;

@@ -25,21 +25,25 @@ public class ProductController {
     @Autowired
     private MessageBuildService messageBuildService;
 
-
     @RequestMapping("/product/add")
     public ResponseEntity addProduct(RequestEntity<String> request) {
         // parse request
         String body = request.getBody();
-        Product requestProduct = messageBuildService.parseProduct(body);
-        InternalRequest internalRequest = messageBuildService.parseExternalRequest(body);
+        InternalRequest internalRequest;
+        try{
+            internalRequest = messageBuildService.parseExternalRequest(body);
+        }catch (Exception e){
+            InternalResponse errorResponse = new InternalResponse();
+            errorResponse.setReturnCode("70");
+            String errorResponseBody = messageBuildService.buildResponseBody(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseBody);
+        }
 
         // service
         InternalResponse internalResponse = productService.addProduct(internalRequest);
 
         // build response
-        Product responseProduct = internalResponse.getProduct();
-        JSONObject responseProductJSON = new JSONObject(responseProduct);
-        String responseBody = messageBuildService.buildResponseBody("product", responseProductJSON);
+        String responseBody = messageBuildService.buildResponseBody(internalResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
