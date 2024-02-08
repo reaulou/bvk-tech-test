@@ -141,7 +141,6 @@ public class ProductServiceTest {
         InternalResponse internalResponse = productService.updateProductById(internalRequest);
 
         // verify
-        Product returnedProduct = internalResponse.getProduct();
         String returnCode = internalResponse.getReturnCode();
 
         assertEquals("00", returnCode);
@@ -165,61 +164,141 @@ public class ProductServiceTest {
         InternalResponse internalResponse = productService.updateProductById(internalRequest);
 
         // verify
-        Product returnedProduct = internalResponse.getProduct();
         String returnCode = internalResponse.getReturnCode();
 
         assertEquals("60", returnCode);
         verify(productRepository, times(1)).findById(id);
     }
 
-//    @Test
-//    void testExecuteProductOrder_success(){
-//        Product product = new Product("Buku Player's Handbook DND", 199999, 7);
-//
-//        long id = 1;
-//        Integer orderedQuantity = 5;
-//        when(productRepository.findById(any())).thenReturn(Optional.of(product));
-//
-//        //test
-//        Integer returnedQuantity = productService.executeProductOrder(id, orderedQuantity);
-//
-//        // should be 2 books left after buying 5 from a stock of 7
-//        assertEquals(2, returnedQuantity);
-//        // verify that this method was invoked exactly 1 time
-//        verify(productRepository, times(1)).findById(id);
-//        verify(productRepository, times(1)).save(any(Product.class));
-//    }
-//
-//    @Test
-//    void testExecuteProductOrder_notExist(){
-//        long id = 1;
-//        Integer orderedQuantity = 5;
-//        when(productRepository.findById(any())).thenReturn(Optional.empty());
-//
-//        //test
-//        Integer returnedQuantity = productService.executeProductOrder(id, orderedQuantity);
-//
-//        // should be 2 books left after buying 5 from a stock of 7
-//        assertEquals(null, returnedQuantity);
-//        // verify that this method was invoked exactly 1 time
-//        verify(productRepository, times(1)).findById(id);
-//    }
-//
-//    @Test
-//    void testExecuteProductOrder_orderQuantitySameWithStockQuantity(){
-//        Product product = new Product("Buku Player's Handbook DND", 199999, 7);
-//
-//        long id = 1;
-//        Integer orderedQuantity = 7;
-//        when(productRepository.findById(any())).thenReturn(Optional.of(product));
-//
-//        //test
-//        Integer returnedQuantity = productService.executeProductOrder(id, orderedQuantity);
-//
-//        // should be 0 books left after buying 7 from a stock of 7
-//        assertEquals(0, returnedQuantity);
-//        // verify that this method was invoked exactly 1 time
-//        verify(productRepository, times(1)).findById(id);
-//        verify(productRepository, times(1)).deleteById(id);
-//    }
+    @Test
+    void testDeleteProductById_productExist(){
+        // setup
+        Product product = new Product("Buku Player's Handbook DND", 249999, 7);
+
+        long id = 1;
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+
+        InternalRequest internalRequest = new InternalRequest();
+        internalRequest.setId(id);
+
+        // test
+        InternalResponse internalResponse = productService.deleteProductById(internalRequest);
+
+        // verify
+        String returnCode = internalResponse.getReturnCode();
+
+        assertEquals("00", returnCode);
+        verify(productRepository, times(1)).findById(id);
+        verify(productRepository, times(1)).deleteById(any());
+    }
+
+    @Test
+    void testDeleteProductById_productNotExist(){
+        long id = 1;
+        when(productRepository.findById(any())).thenReturn(Optional.empty());
+
+        InternalRequest internalRequest = new InternalRequest();
+        internalRequest.setId(id);
+
+        // test
+        InternalResponse internalResponse = productService.deleteProductById(internalRequest);
+
+        // verify
+        String returnCode = internalResponse.getReturnCode();
+
+        assertEquals("60", returnCode);
+        verify(productRepository, times(1)).findById(id);
+    }
+
+    @Test
+    void testExecuteProductOrder_success(){
+        // setup
+        Product product = new Product("Buku Player's Handbook DND", 199999, 7);
+
+        long id = 1;
+        Integer orderedQuantity = 5;
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+
+        InternalRequest internalRequest = new InternalRequest();
+        internalRequest.setId(id);
+        internalRequest.setQuantity(orderedQuantity);
+
+        //test
+        InternalResponse internalResponse = productService.executeProductOrder(internalRequest);
+
+        // verify
+        String returnCode = internalResponse.getReturnCode();
+
+        assertEquals("00", returnCode);
+        verify(productRepository, times(1)).findById(id);
+        verify(productRepository, times(1)).save(any(Product.class));
+    }
+
+    @Test
+    void testExecuteProductOrder_success_orderAllStockedAmount(){
+        // setup
+        Product product = new Product("Buku Player's Handbook DND", 199999, 7);
+
+        long id = 1;
+        Integer orderedQuantity = 7;
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+
+        InternalRequest internalRequest = new InternalRequest();
+        internalRequest.setId(id);
+        internalRequest.setQuantity(orderedQuantity);
+
+        //test
+        InternalResponse internalResponse = productService.executeProductOrder(internalRequest);
+
+        // verify
+        String returnCode = internalResponse.getReturnCode();
+
+        assertEquals("00", returnCode);
+        verify(productRepository, times(1)).findById(id);
+        verify(productRepository, times(1)).deleteById(any());
+    }
+
+    @Test
+    void testExecuteProductOrder_notExist(){
+        // setup
+        long id = 1;
+        Integer orderedQuantity = 5;
+        when(productRepository.findById(any())).thenReturn(Optional.empty());
+
+        InternalRequest internalRequest = new InternalRequest();
+        internalRequest.setId(id);
+        internalRequest.setQuantity(orderedQuantity);
+
+        //test
+        InternalResponse internalResponse = productService.executeProductOrder(internalRequest);
+
+        // verify
+        String returnCode = internalResponse.getReturnCode();
+
+        assertEquals("60", returnCode);
+        verify(productRepository, times(1)).findById(id);
+    }
+
+    @Test
+    void testExecuteProductOrder_insufficientQuantity(){
+        // setup
+        Product product = new Product("Buku Player's Handbook DND", 199999, 7);
+
+        long id = 1;
+        Integer orderedQuantity = 10;
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+
+        InternalRequest internalRequest = new InternalRequest();
+        internalRequest.setId(id);
+        internalRequest.setQuantity(orderedQuantity);
+
+        //test
+        InternalResponse internalResponse = productService.executeProductOrder(internalRequest);
+
+        // verify
+        String returnCode = internalResponse.getReturnCode();
+
+        assertEquals("61", returnCode);
+        verify(productRepository, times(1)).findById(id);
+    }
 }
