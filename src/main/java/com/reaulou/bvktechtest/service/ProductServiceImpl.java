@@ -67,10 +67,11 @@ public class ProductServiceImpl implements ProductService{
                 internalResponse.setProductList(productList);
                 internalResponse.setReturnCode("00");
                 internalResponse.setReturnDesc("success");
+            }else{
+                // set internalResponse
+                internalResponse.setReturnCode("60");
+                internalResponse.setReturnDesc("product not found");
             }
-            // set internalResponse
-            internalResponse.setReturnCode("60");
-            internalResponse.setReturnDesc("product not found");
         }catch (Exception e){
             // set internalResponse
             internalResponse.setReturnCode("99");
@@ -100,10 +101,11 @@ public class ProductServiceImpl implements ProductService{
                 // set internalResponse
                 internalResponse.setReturnCode("00");
                 internalResponse.setReturnDesc("success");
+            }else{
+                // set internalResponse
+                internalResponse.setReturnCode("60");
+                internalResponse.setReturnDesc("product not found");
             }
-            // set internalResponse
-            internalResponse.setReturnCode("60");
-            internalResponse.setReturnDesc("product not found");
         }catch (Exception e){
             // set internalResponse
             internalResponse.setReturnCode("99");
@@ -143,10 +145,11 @@ public class ProductServiceImpl implements ProductService{
                     internalResponse.setReturnCode("00");
                     internalResponse.setReturnDesc("success");
                 }
+            }else{
+                // set internalResponse
+                internalResponse.setReturnCode("60");
+                internalResponse.setReturnDesc("product not found");
             }
-            // set internalResponse
-            internalResponse.setReturnCode("60");
-            internalResponse.setReturnDesc("product not found");
         }catch (Exception e){
             // set internalResponse
             internalResponse.setReturnCode("99");

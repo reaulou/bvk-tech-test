@@ -1,13 +1,10 @@
 package com.reaulou.bvktechtest.service;
 
-import com.reaulou.bvktechtest.core.InternalMessage;
 import com.reaulou.bvktechtest.core.InternalRequest;
 import com.reaulou.bvktechtest.core.InternalResponse;
 import com.reaulou.bvktechtest.model.Product;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class MessageBuildServiceImpl implements MessageBuildService{
@@ -16,11 +13,10 @@ public class MessageBuildServiceImpl implements MessageBuildService{
         JSONObject bodyJSON = new JSONObject(body);
         JSONObject messageJSON = bodyJSON.getJSONObject("message");
 
-
-        Long id = messageJSON.getLong("id");
-        String name = messageJSON.getString("name");
-        Integer price = messageJSON.getInt("price");
-        Integer quantity = messageJSON.getInt("quantity");
+        Long id = messageJSON.optLong("id");
+        String name = messageJSON.optString("name");
+        Integer price = messageJSON.optInt("price");
+        Integer quantity = messageJSON.optInt("quantity");
 
         InternalRequest internalRequest = new InternalRequest();
         internalRequest.setId(id);

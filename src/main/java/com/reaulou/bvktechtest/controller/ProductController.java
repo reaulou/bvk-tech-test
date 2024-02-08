@@ -5,6 +5,7 @@ import com.reaulou.bvktechtest.core.InternalResponse;
 import com.reaulou.bvktechtest.model.Product;
 import com.reaulou.bvktechtest.service.MessageBuildService;
 import com.reaulou.bvktechtest.service.ProductService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -69,11 +70,13 @@ public class ProductController {
         InternalResponse internalResponse = productService.getProductById(internalRequest);
 
         // build response
-        Product responseProduct = null;
+        JSONObject responseProductJSON = null;
         if(internalResponse.getProductList() != null) {
-            responseProduct = internalResponse.getProductList().get(0);
+            Product responseProduct = internalResponse.getProductList().get(0);
+            responseProductJSON = new JSONObject(responseProduct);
         }
-        String responseBody = messageBuildService.buildResponseBody(responseProduct ,internalResponse);
+
+        String responseBody = messageBuildService.buildResponseBody(responseProductJSON,internalResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
